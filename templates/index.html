@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Index Page</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    {% block content %}
+    <div class="container w-25 mt-5 d-flex flex-row justify-content-evenly">
+      {% csrf_token %}
+      <button type="button" class="btn btn-success btn-lg btn-block" id="like-btn" name="like-btn">
+        Like
+      </button>
+      <div id="countLikes">
+        <h3>Count of Likes: {{numLikes}}</h3>
+      </div>
+    </div>
+
+    <div class="container w-25 mt-3 d-flex flex-row justify-content-evenly">
+      {% csrf_token %}
+      <button
+        type="button"
+        class="btn btn-danger btn-lg btn-block"
+        id="dislike-btn"
+        name="dislike-btn"
+      >
+        Disike
+      </button>
+      <div id="countDislikes">
+        <h3>Count of Dislikes: {{numDislikes}}</h3>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
+
+    {% endblock %}
+  </body>
+  <script>
+    let likes = document.getElementById('countLikes');
+    let dislikes = document.getElementById('countDislikes');
+
+    let likeButton = document.getElementById('like-btn');
+    likeButton.addEventListener('click', likeClickHandler);
+
+    let countLike = {{numLikes}};
+    let countDislike = {{numDislikes}};
+
+    let dislikeButton = document.getElementById('dislike-btn');
+    dislikeButton.addEventListener('click', dislikeClickHandler);
+
+    function likeClickHandler() {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('POST', "{%url 'index' %}", true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            countLike++;
+            likes.innerHTML = `<h3>Count of Likes: ${countLike}</h3>`;
+        }
+
+        xhr.send('like-btn=countLike');
+    }
+
+    function dislikeClickHandler() {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('POST', "{%url 'index' %}", true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            countDislike++;
+            dislikes.innerHTML = `<h3>Count of Dislikes: ${countDislike}</h3>`;
+        }
+
+        xhr.send('dislike-btn=countDislike');
+    }
+  </script>
+</html>
